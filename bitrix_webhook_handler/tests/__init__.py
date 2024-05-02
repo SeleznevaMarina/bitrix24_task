@@ -1,0 +1,1 @@
+from tests.fixtures.seeds import insert_data, delete_data

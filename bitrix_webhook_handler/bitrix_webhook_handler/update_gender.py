@@ -1,11 +1,11 @@
 import psycopg2
 from flask import Flask
 from flask import request
-from pybitrix.bitrix24 import Bitrix24
+from pybitrix import PyBitrix
 
 app = Flask(__name__)
 
-@app.route('out_webhook_url', methods=['POST'])
+@app.route('/out_webhook_url', methods=['POST'])
 def outwebhook():
     request_data = request.form
     request_data = request_data.json()
@@ -14,10 +14,10 @@ def outwebhook():
 
 def execute_query(query):
     connection = psycopg2.connect(
-        dbname="db_name",
-        user="db_user",
-        password="db_password",
-        host="db_host"
+        dbname="test_bitrix",
+        user="marina",
+        password="123",
+        host="localhost"
         )
     cursor = connection.cursor()
     cursor.execute(query)
@@ -27,7 +27,8 @@ def execute_query(query):
     return result
 
 def update_contact_gender(contact_id, gender):
-    bx24 = Bitrix24('domen', 'login', 'password')
+    webhook = "https://test123"
+    bx24 = PyBitrix(inbound_hook=webhook)
 
     contact_data = {
         "ID": contact_id,
@@ -36,12 +37,8 @@ def update_contact_gender(contact_id, gender):
             },
         }
 
-    response = bx24.call_method('crm.contact.update', contact_data)
+    response = bx24.call('crm.contact.update', contact_data)
 
-    if response['error']:
-        print("Ошибка при обновлении контакта:", response['error_description'])
-    else:
-        print("Данные контакта успешно обновлены")
 
 def handle_contact_change(request_data):
     # Получаем данные контакта из Битрикс

@@ -1,0 +1,5 @@
+Flask==2.0.2
+psycopg2==2.9.1
+pybitrix==0.3.0
+requests-mock==1.9.2
+alembic==1.7.4
